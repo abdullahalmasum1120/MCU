@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mlv_tv_username">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/mlv_civ_profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_avatar" />
+
+        <View
+            android:id="@+id/mlv_active_status"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignEnd="@+id/mlv_civ_profile_image"
+            android:layout_alignBottom="@+id/mlv_civ_profile_image"
+            android:background="@drawable/active_background"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/mlv_tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mlv_tv_username"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/container"
+        android:background="@drawable/left_message_bg"
+        android:maxWidth="250dp"
+        android:padding="10dp"
+        android:textColor="@color/whiteTextColor"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/mlv_tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/container"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="45dp"
+        android:maxWidth="220dp"
+        android:text="username" />
+
+    <TextView
+        android:id="@+id/mlv_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/container"
+        android:layout_marginStart="45dp"
+        android:text="time"
+        android:visibility="gone" />
+
+</RelativeLayout>

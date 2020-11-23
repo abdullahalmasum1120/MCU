@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "381861038595",
+    "firebase_url": "https://com-aam-mcu.firebaseio.com",
+    "project_id": "com-aam-mcu",
+    "storage_bucket": "com-aam-mcu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381861038595:android:aee807b0e06bd14b6b5c36",
+        "android_client_info": {
+          "package_name": "com.aam.mcu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "381861038595-019hcqi4evbiuo6324d79vqmp22q6o8c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjNYPE4qiYBHxw-JTGjkiQRkBqy8dv_2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "381861038595-019hcqi4evbiuo6324d79vqmp22q6o8c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

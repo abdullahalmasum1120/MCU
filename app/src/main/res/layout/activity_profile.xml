@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EEEEEE"
+    tools:context=".Profile">
+
+    <RelativeLayout
+        android:id="@+id/p_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp">
+
+        <ImageView
+            android:id="@+id/p_iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_back"
+            app:tint="@color/black" />
+
+        <TextView
+            style="@style/viewParent.headerText"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/p_iv_back"
+            android:text="Profile" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/P_top_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/p_title"
+        android:padding="20dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/p_civ_profile_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_avatar"
+            app:civ_border_color="@color/colorAccent"
+            app:civ_border_width="1dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ap_add_profile_Image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignEnd="@+id/p_civ_profile_image"
+            android:layout_alignBottom="@+id/p_civ_profile_image"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            android:src="@drawable/ic_camera"
+            android:visibility="gone"
+            app:civ_circle_background_color="#FFFFFF" />
+
+        <View
+            android:id="@+id/p_active_status"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignEnd="@+id/p_civ_profile_image"
+            android:layout_alignBottom="@+id/p_civ_profile_image"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/active_background"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/p_civ_profile_image">
+
+            <TextView
+                android:id="@+id/p_tv_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/p_tv_university"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/p_tv_username"
+                android:layout_marginTop="5dp"
+                android:text="Mohammadpur central university"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/P_top_view"
+        android:layout_margin="20dp"
+        app:cardCornerRadius="20dp">
+
+        <ImageView
+            android:id="@+id/ap_iv_edit_profile"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|top"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_edit"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/aup_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/aup_tv_profile_university"
+            android:layout_margin="20dp"
+            android:elevation="10dp"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/aup_tv_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile Details"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/aup_details_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/aup_tv_top"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/p_tv_roll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Roll:" />
+
+                <TextView
+                    android:id="@+id/p_tv_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/p_tv_roll"
+                    android:layout_marginTop="5dp"
+                    android:text="Phone No:" />
+
+                <TextView
+                    android:id="@+id/p_tv_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/p_tv_phone"
+                    android:layout_marginTop="5dp"
+                    android:text="E-mail :" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ap_fab_update"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:backgroundTint="#FFFFFF"
+        android:src="@drawable/ic_upload"
+        android:visibility="gone" />
+
+</RelativeLayout>

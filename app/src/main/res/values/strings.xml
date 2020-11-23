@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MCU</string>
+
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_roll_hint">Roll</string>
+    <string name="example_email_text">example123@gmail.com</string>
+    <string name="username_text">username</string>
+    <string name="navigation_drawer_open">navigation drawer opened</string>
+    <string name="navigation_drawer_close">navigation drawer closed</string>
+</resources>

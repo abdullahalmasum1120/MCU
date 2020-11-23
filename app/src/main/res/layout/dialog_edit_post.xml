@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/toolbar_background"
+    android:padding="20dp">
+
+    <RelativeLayout
+        android:id="@+id/dePost_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+        <TextView
+            style="@style/viewParent.headerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Edit Post" />
+
+        <ImageView
+            android:id="@+id/dePost_iv_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_close" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/dePost_edit_text_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dePost_header"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dePost_et_postBody_parent"
+            style="@style/parent">
+
+            <EditText
+                android:id="@+id/dePost_et_postBody"
+                style="@style/parent"
+                android:inputType="textMultiLine"
+                android:hint="Type here..." />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+        android:id="@+id/dePost_btn_save"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dePost_edit_text_container"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/button_background_blue"
+        android:gravity="center"
+        android:text="save"
+        android:textColor="@color/whiteTextColor"
+        android:textStyle="bold"
+        app:initialCornerAngle="27dp"
+        app:spinning_bar_color="#FFF"
+        app:spinning_bar_padding="6dp"
+        app:spinning_bar_width="4dp" />
+
+
+</RelativeLayout>

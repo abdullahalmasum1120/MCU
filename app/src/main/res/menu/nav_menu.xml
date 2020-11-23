@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/chat"
+            android:icon="@drawable/ic_chat"
+            android:title="Chat" />
+        <item
+            android:id="@+id/members"
+            android:icon="@drawable/ic_members"
+            android:title="Members" />
+        <item
+            android:id="@+id/quiz"
+            android:icon="@drawable/ic_quiz"
+            android:title="Quiz" />
+        <item
+            android:id="@+id/contest"
+            android:icon="@drawable/ic_code"
+            android:title="Contest" />
+    </group>
+
+    <group
+        android:id="@+id/group_bottom"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/share"
+            android:icon="@drawable/ic_share"
+            android:title="Share" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info"
+            android:title="About us" />
+        <item
+            android:id="@+id/sign_out"
+            android:icon="@drawable/ic_sign_out"
+            android:title="Sign Out" />
+    </group>
+</menu>
