@@ -32,13 +32,13 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 
 public class EditProfile extends Dialog {
 
-    EditText et_phoneNo;
-    TextInputLayout phoneNoParent;
-    ImageView iv_close;
-    CircularProgressButton btn_save;
+    private EditText et_phoneNo;
+    private TextInputLayout phoneNoParent;
+    private ImageView iv_close;
+    private CircularProgressButton btn_save;
 
-    FirebaseUser firebaseUser;
-    DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
 
     public EditProfile(@NonNull Context context) {
         super(context);

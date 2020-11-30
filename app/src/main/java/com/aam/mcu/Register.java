@@ -42,24 +42,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Register extends AppCompatActivity {
 
-    CircleImageView civ_addProfileImage;
-    EditText et_username, et_email, et_rollNo, et_mobileNo, et_password;
-    TextInputLayout usernameParent, emailParent, rollNoParent, mobileNoParent, passwordParent;
-    CircularProgressButton btn_register;
-    TextView tv_logIn, tv_showInfo;
+    private final String TAG = "----Register Activity----";
+    private final int MCU_PROFILE_IMAGE_REQUEST = 1111;
 
-    final int MCU_PROFILE_IMAGE_REQUEST = 1111;
+    private CircleImageView civ_addProfileImage;
+    private EditText et_username, et_email, et_rollNo, et_mobileNo, et_password;
+    private TextInputLayout usernameParent, emailParent, rollNoParent, mobileNoParent, passwordParent;
+    private CircularProgressButton btn_register;
+    private TextView tv_logIn, tv_showInfo;
 
-    Uri profileImageUri;
-    String username, email, rollNo, mobileNo, password;
 
-    FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
-    private String TAG = "--Register--";
+    private Uri profileImageUri;
+    private String username, email, rollNo, mobileNo, password;
+
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_register);
 
         init();
@@ -325,7 +327,6 @@ public class Register extends AppCompatActivity {
         if (layout.isErrorEnabled()) {
             layout.setErrorEnabled(false);
         }
-//        layout.setEndIconDrawable(R.drawable.ic_ok);
         layout.setEndIconVisible(true);
     }
 

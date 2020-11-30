@@ -20,12 +20,12 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 
 public class ForgotPassword extends AppCompatActivity {
 
-    EditText et_email;
-    CircularProgressButton btn_sendLink;
-    TextInputLayout et_emailParent;
-    TextView tv_showTips;
+    private EditText et_email;
+    private CircularProgressButton btn_sendLink;
+    private TextInputLayout et_emailParent;
+    private TextView tv_showTips;
 
-    String email;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 email = et_email.getText().toString();
+
                 //set to default tips
                 tv_showTips.setText("we will email you a link to reset your password");
                 tv_showTips.setTextColor(getColor(R.color.grayText));
@@ -66,7 +67,7 @@ public class ForgotPassword extends AppCompatActivity {
                                         Thread.sleep(5 * 1000);
                                         FirebaseAuth.getInstance().signOut();
                                         Intent intent = new Intent(ForgotPassword.this, LogIn.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
                                         finish();
                                     } catch (InterruptedException e) {

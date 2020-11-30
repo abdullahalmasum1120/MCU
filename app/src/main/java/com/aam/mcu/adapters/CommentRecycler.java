@@ -22,12 +22,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CommentRecycler extends RecyclerView.Adapter<CommentRecycler.ViewHolder> {
 
-    Context context;
-    ArrayList<Comment> comments;
-    DatabaseReference databaseReference;
+    private Context context;
+    private ArrayList<Comment> comments;
+    private DatabaseReference databaseReference;
 
     public CommentRecycler(Context context, ArrayList<Comment> comments) {
         this.context = context;
@@ -57,7 +58,7 @@ public class CommentRecycler extends RecyclerView.Adapter<CommentRecycler.ViewHo
                     .child("profileImageUrl").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (!snapshot.getValue().equals(comments.get(position).getProfileImageUrl())){
+                    if (!Objects.equals(snapshot.getValue(), comments.get(position).getProfileImageUrl())){
                         Glide.with(context).load(snapshot.getValue()).into(holder.iv_profileImage);
                     }
                 }
@@ -70,11 +71,11 @@ public class CommentRecycler extends RecyclerView.Adapter<CommentRecycler.ViewHo
 
             //set username if changed
             databaseReference.child("users").child(comments.get(position).getUid())
-                    .child("username").addValueEventListener(new ValueEventListener() {
+                    .child("username").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (!snapshot.getValue().equals(comments.get(position).getUsername())){
-                        holder.tv_username.setText(snapshot.getValue().toString());
+                    if (!Objects.equals(snapshot.getValue(), comments.get(position).getUsername())){
+                        holder.tv_username.setText(snapshot.getValue(String.class));
                     }
                 }
 

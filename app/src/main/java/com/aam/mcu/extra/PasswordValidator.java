@@ -12,7 +12,6 @@ public class PasswordValidator {
     public int SMALL_LETTER_ERROR = 126;
     public int NO_ERROR = 127;
 
-    // A utility function to check
     // whether a password is valid or not
     public int isValid(String password)
     {

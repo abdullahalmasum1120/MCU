@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,14 +40,14 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
     public static final String ACTIVE = "active";
     public static final String OFFLINE = "offline";
 
-    Context context;
-    ArrayList<Chat> chats;
+    private Context context;
+    private ArrayList<Chat> chats;
 
-    DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
-    User user;
-    String seen;
-    DrawerToggle toggle;
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private User user;
+    private String seen;
+    private DrawerToggle toggle;
 
     public ChatRecycler() {
     }
@@ -61,16 +62,16 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
 
         databaseReference.child("users").child(firebaseUser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(User.class);
-            }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        user = snapshot.getValue(User.class);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                    }
+                });
     }
 
     @NonNull
@@ -102,7 +103,7 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
                     .child("profileImageUrl").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (!snapshot.getValue().equals(chats.get(position).getProfileImageUrl())) {
+                    if (!Objects.equals(snapshot.getValue(), chats.get(position).getProfileImageUrl())) {
                         Glide.with(context).load(snapshot.getValue()).into(holder.profileImage);
                     }
                 }
@@ -117,50 +118,13 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
             holder.showName.setText(chats.get(position).getUsername());
 
             //set username if changed
-//            databaseReference.child("users").child(chats.get(position).getUid())
-//                    .child("username").addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (!snapshot.getValue().equals(chats.get(position).getUsername())) {
-//                        holder.showName.setText(snapshot.getValue().toString());
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-        }
-
-        if (holder.getItemViewType() == MESSAGE_TYPE_LEFT){
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("uid", firebaseUser.getUid());
-            hashMap.put("username", user.getUsername());
-            hashMap.put("profileImageUrl",user.getProfileImageUrl());
-            databaseReference.child("chats/" + chats.get(position).getMessageId() + "/seen")
-                    .child(firebaseUser.getUid()).setValue(hashMap);
-            if (toggle.isBadgeEnabled()) {
-                toggle.setBadgeText("0");
-                toggle.setBadgeEnabled(false);
-            }
-        }
-        //active status show
-        if (holder.getItemViewType() == MESSAGE_TYPE_LEFT){
-            databaseReference.child("users/" + chats.get(position).getUid() + "/status")
-                    .addValueEventListener(new ValueEventListener() {
+            databaseReference.child("users").child(chats.get(position).getUid())
+                    .child("username").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.getValue() != null) {
-                        if (snapshot.getValue().equals(ACTIVE)) {
-                            if (!holder.active_status.isShown()) {
-                                holder.active_status.setVisibility(View.VISIBLE);
-                            }
-                        } else if (snapshot.getValue().equals(OFFLINE)) {
-                            if (holder.active_status.isShown()) {
-                                holder.active_status.setVisibility(View.GONE);
-                            }
-                        }
+                    if (!Objects.equals(snapshot.getValue(), chats.get(position).getUsername())) {
+                        chats.get(position).setUsername(snapshot.getValue(String.class));
+                        holder.showName.setText(snapshot.getValue(String.class));
                     }
                 }
 
@@ -169,6 +133,44 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
 
                 }
             });
+        }
+
+        if (holder.getItemViewType() == MESSAGE_TYPE_LEFT) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("uid", firebaseUser.getUid());
+            hashMap.put("username", user.getUsername());
+            hashMap.put("profileImageUrl", user.getProfileImageUrl());
+            databaseReference.child("chats/" + chats.get(position).getMessageId() + "/seen")
+                    .child(firebaseUser.getUid()).setValue(hashMap);
+            if (toggle.isBadgeEnabled()) {
+                toggle.setBadgeText("0");
+                toggle.setBadgeEnabled(false);
+            }
+        }
+        //active status show
+        if (holder.getItemViewType() == MESSAGE_TYPE_LEFT) {
+            databaseReference.child("users/" + chats.get(position).getUid() + "/status")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.getValue() != null) {
+                                if (snapshot.getValue().equals(ACTIVE)) {
+                                    if (!holder.active_status.isShown()) {
+                                        holder.active_status.setVisibility(View.VISIBLE);
+                                    }
+                                } else if (snapshot.getValue().equals(OFFLINE)) {
+                                    if (holder.active_status.isShown()) {
+                                        holder.active_status.setVisibility(View.GONE);
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
         }
 
         holder.showMessage.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +187,7 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
                 }
 
                 if (holder.getItemViewType() == MESSAGE_TYPE_RIGHT) {
-                    seen =  "Seen by";
+                    seen = "Seen by";
                     if (!holder.showName.isShown()) {
                         holder.showName.setVisibility(View.VISIBLE);
 
@@ -196,6 +198,7 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ViewHolder> 
 
                                         MessageSeenPerson messageSeenPerson = snapshot.getValue(MessageSeenPerson.class);
 
+                                        assert messageSeenPerson != null;
                                         seen = seen + " " + messageSeenPerson.getUsername();
                                         holder.showName.setText(seen);
                                     }

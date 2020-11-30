@@ -11,8 +11,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Welcome extends AppCompatActivity {
 
-    ProgressBar progressBar;
-    FirebaseAuth firebaseAuth;
+    private ProgressBar progressBar;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +26,11 @@ public class Welcome extends AppCompatActivity {
             public void run() {
                 doWait();
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                if (firebaseUser != null && firebaseUser.isEmailVerified()){
+                if (firebaseUser != null && firebaseUser.isEmailVerified()) {
                     Intent intent = new Intent(Welcome.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
-                }
-                else {
+                } else {
                     Intent intent = new Intent(Welcome.this, LogIn.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
                 finish();

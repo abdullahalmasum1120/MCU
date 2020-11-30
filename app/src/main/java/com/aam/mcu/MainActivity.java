@@ -54,26 +54,27 @@ import retrofit2.Callback;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String CHAT = "chat";
-    public static final String HOME = "home";
-    public static final String MEMBERS = "members";
-    public static final String QUIZ = "quiz";
-    public static final String CONTEST = "contest";
-    int notificationCount;
-    String topic = "/topics/chat";
-    APIService apiService;
+    private final String topic = "/topics/chat";
+    private final String TAG = "-----MainActivity----";
 
-    DrawerLayout drawerLayout;
-    Toolbar toolbar;
-    NavigationView navigationView;
+    private static final String CHAT = "chat";
+    private static final String HOME = "home";
+    private static final String MEMBERS = "members";
+    private static final String QUIZ = "quiz";
+    private static final String CONTEST = "contest";
+    private int notificationCount;
+    private APIService apiService;
 
-    CircleImageView civ_profileImage, civ_titleBsrProfileImage;
-    TextView tv_username, tv_email, titleBarTitle;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
 
-    DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
-    DrawerToggle toggle;
-    private String TAG = "------MainActivity------";
+    private CircleImageView civ_profileImage, civ_titleBsrProfileImage;
+    private TextView tv_username, tv_email, titleBarTitle;
+
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private DrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,10 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
-                                startActivity(new Intent(MainActivity.this, LogIn.class));
+                                status("offline");
+                                Intent intent = new Intent(MainActivity.this, LogIn.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                                 finish();
                             }
                         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -371,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void sendNotification(final String title, final String message) {
+    private void sendNotification(final String title, final String message) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -383,6 +387,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                         if (!response.isSuccessful()){
                             try {
+                                assert response.errorBody() != null;
                                 Log.d(TAG, "onResponse: " + response.errorBody().string());
                             } catch (IOException e) {
                                 e.printStackTrace();

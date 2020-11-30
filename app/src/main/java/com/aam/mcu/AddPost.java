@@ -1,6 +1,5 @@
 package com.aam.mcu;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,50 +36,27 @@ import java.util.Locale;
 
 public class AddPost extends AppCompatActivity {
 
-    ImageView iv_post_image;
-    EditText et_post_text;
-    Button btn_add_post;
-    ProgressBar post_progressbar;
+    private final int ADD_IMAGE_REQUEST = 2;
 
-    final int ADD_IMAGE_REQUEST = 2;
-    String postText, username, profileImgUrl;
-    Uri postImageUri;
-    HashMap<String, String> hashMap;
+    private ImageView iv_post_image;
+    private EditText et_post_text;
+    private Button btn_add_post;
 
-    StorageReference storageReference;
-    DatabaseReference databaseReference;
-    FirebaseUser user;
-    ProgressDialog progressDialog;
+    private String postText;
+    private Uri postImageUri;
+    private HashMap<String, String> hashMap;
+    private SimpleDateFormat simpleDateFormat;
+
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_add_post);
 
-        hashMap = new HashMap<>();
-        progressDialog = new ProgressDialog(this);
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
-
-        databaseReference.child("users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                username = snapshot.child("username").getValue(String.class);
-                profileImgUrl = snapshot.child("profileImageUrl").getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        iv_post_image = findViewById(R.id.add_post_image);
-        et_post_text = findViewById(R.id.add_post_text);
-        btn_add_post = findViewById(R.id.btn_add_post);
-        post_progressbar = findViewById(R.id.post_progressbar);
+        init();
 
         iv_post_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,15 +70,14 @@ public class AddPost extends AppCompatActivity {
         btn_add_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy 'at' hh:mm:ss", Locale.getDefault());
                 postText = et_post_text.getText().toString();
 
-                String postId = System.currentTimeMillis() + "";
+                String postId = String.valueOf(System.currentTimeMillis());
                 String dbRef = "posts/" + postId;
 
-                if (!TextUtils.isEmpty(postText)) {
+                if ((!TextUtils.isEmpty(postText)) || (postImageUri != null)) {
                     if (postImageUri != null) {
-                        String stRef = "posts/" + user.getUid() + "/"
+                        String stRef = "posts/" + firebaseUser.getUid() + "/"
                                 + System.currentTimeMillis() + "/"
                                 + postImageUri.getLastPathSegment();
 
@@ -120,11 +94,14 @@ public class AddPost extends AppCompatActivity {
                     }
 
                     hashMap.put("postTime", simpleDateFormat.format(Calendar.getInstance().getTime()));
-                    hashMap.put("postBody", postText);
-                    hashMap.put("postImageUrl", "default");
-
+                    if (!postText.isEmpty()) {
+                        hashMap.put("postBody", postText);
+                    }
+                    if (postImageUri != null){
+                        hashMap.put("postImageUrl", "default");
+                    }
                     hashMap.put("postId", postId);
-                    hashMap.put("uid", user.getUid());
+                    hashMap.put("uid", firebaseUser.getUid());
 
                     databaseReference.child(dbRef)
                             .setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -135,10 +112,22 @@ public class AddPost extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Toast.makeText(AddPost.this, "You must write something", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddPost.this, "Please type something or add an image to post", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void init() {
+        hashMap = new HashMap<>();
+        simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy 'at' hh:mm:ss", Locale.getDefault());
+
+        iv_post_image = findViewById(R.id.add_post_image);
+        et_post_text = findViewById(R.id.add_post_text);
+        btn_add_post = findViewById(R.id.btn_add_post);
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -150,7 +139,6 @@ public class AddPost extends AppCompatActivity {
             if (postImageUri != null) {
                 Glide.with(this).load(postImageUri).into(iv_post_image);
             }
-
         }
     }
 

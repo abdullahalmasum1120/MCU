@@ -35,17 +35,17 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 
 public class ChangePassword extends Dialog {
 
-    EditText et_oldPassword, et_firstPassword, et_secondPassword;
-    ImageView btn_cancel;
-    CircularProgressButton btn_change;
-    TextView tv_forgotPassword;
-    TextInputLayout old_passwordParent, first_passwordParent, second_passwordParent;
+    private EditText et_oldPassword, et_firstPassword, et_secondPassword;
+    private ImageView btn_cancel;
+    private CircularProgressButton btn_change;
+    private TextView tv_forgotPassword;
+    private TextInputLayout old_passwordParent, first_passwordParent, second_passwordParent;
 
-    DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
-    User user;
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private User user;
 
-    String oldPass, firstPass, secondPass;
+    private String oldPass, firstPass, secondPass;
 
     public ChangePassword(@NonNull Context context) {
         super(context);
@@ -134,17 +134,6 @@ public class ChangePassword extends Dialog {
             }
         });
     }
-
-//    private void showTooltip(String message, int backgroundColor, View view) {
-//        Tooltip.Builder builder = new Tooltip.Builder(view)
-//                .setCancelable(true)
-//                .setTextColor(Color.WHITE)
-//                .setBackgroundColor(backgroundColor)
-//                .setDismissOnClick(true)
-//                .setGravity(Gravity.TOP)
-//                .setText(message);
-//        builder.show();
-//    }
 
     private void changePassword(final String password) {
         if (!btn_change.isAnimating()) {

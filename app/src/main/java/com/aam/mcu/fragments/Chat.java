@@ -1,7 +1,6 @@
 package com.aam.mcu.fragments;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,17 +35,20 @@ import java.util.Locale;
 
 public class Chat extends Fragment {
 
-    RecyclerView recyclerView;
-    ArrayList<com.aam.mcu.data.Chat> chats;
+    private RecyclerView recyclerView;
+    private ArrayList<com.aam.mcu.data.Chat> chats;
 
-    ImageView btnSend;
-    EditText et_message;
-    RecyclerView.Adapter adapter;
-    DatabaseReference databaseReference;
-    HashMap<String, String> hashMap;
-    String username, userId, userProfileImageUrl;
-    FirebaseUser firebaseUser;
-    DrawerToggle toggle;
+    private ImageView btnSend;
+    private EditText et_message;
+    private RecyclerView.Adapter adapter;
+
+    private DatabaseReference databaseReference;
+    private HashMap<String, String> hashMap;
+    private String username, userId, userProfileImageUrl;
+    private SimpleDateFormat simpleDateFormat;
+
+    private FirebaseUser firebaseUser;
+    private DrawerToggle toggle;
 
     public Chat() {
 
@@ -124,11 +126,10 @@ public class Chat extends Fragment {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy 'at' hh:mm:ss", Locale.getDefault());
                 String message = et_message.getText().toString().trim();
                 String messageId = System.currentTimeMillis() + "";
 
-                if (!(TextUtils.isEmpty(message) || message == null)) {
+                if (!message.isEmpty()) {
                     hashMap.put("message", message);
                     hashMap.put("uid", userId);
                     hashMap.put("username", username);
@@ -140,7 +141,6 @@ public class Chat extends Fragment {
                 } else {
                     Toast.makeText(getContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
                 }
-
 
                 et_message.setText("");
             }
@@ -156,6 +156,7 @@ public class Chat extends Fragment {
 
         hashMap = new HashMap<>();
         chats = new ArrayList<>();
+        simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy 'at' hh:mm:ss", Locale.getDefault());
 
         adapter = new ChatRecycler(getContext(), chats, toggle);
         recyclerView.setAdapter(adapter);

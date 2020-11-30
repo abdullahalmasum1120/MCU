@@ -2,6 +2,7 @@ package com.aam.mcu;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,18 +33,19 @@ import java.util.Locale;
 
 public class Comments extends AppCompatActivity {
 
-    ArrayList<Comment> comments;
-    HashMap<String, String> hashMap;
+    private ArrayList<Comment> comments;
+    private HashMap<String, String> hashMap;
+    private SimpleDateFormat simpleDateFormat;
 
-    RecyclerView recyclerView;
-    ImageView iv_back, iv_send;
-    EditText et_comment;
+    private RecyclerView recyclerView;
+    private ImageView iv_back, iv_send;
+    private EditText et_comment;
 
-    DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
 
-    String postId;
-    RecyclerView.Adapter adapter;
+    private String postId;
+    private RecyclerView.Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +98,11 @@ public class Comments extends AppCompatActivity {
         iv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy 'at' hh:mm:ss", Locale.getDefault());
                 String comment = et_comment.getText().toString();
                 et_comment.setText("");
 
                 if (!comment.trim().isEmpty()) {
-
+                    String commentId = System.currentTimeMillis() + "";
                     databaseReference.child("users/" + firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -114,7 +115,6 @@ public class Comments extends AppCompatActivity {
 
                         }
                     });
-                    String commentId = System.currentTimeMillis() + "";
 
                     hashMap.put("commentTime", simpleDateFormat.format(Calendar.getInstance().getTime()));
                     hashMap.put("comment", comment);
@@ -141,6 +141,7 @@ public class Comments extends AppCompatActivity {
 
         hashMap = new HashMap<>();
         comments = new ArrayList<>();
+        simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy 'at' hh:mm:ss", Locale.getDefault());
 
         iv_back = findViewById(R.id.ac_iv_back);
         iv_send = findViewById(R.id.ac_btn_add_comment);

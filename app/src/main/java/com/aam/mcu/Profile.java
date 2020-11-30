@@ -40,17 +40,18 @@ public class Profile extends AppCompatActivity {
     private static final String OFFLINE = "offline";
     private final int MCU_PROFILE_IMAGE_REQUEST = 123;
 
-    TextView tvRoll, tvName, tvPhone, tvEmail;
-    CircleImageView civ_ProfileImg, civ_add_profile_image;
-    ImageView iv_back, iv_edit_profile;
-    View active_status;
-    FloatingActionButton fab_update;
+    private TextView tvRoll, tvName, tvPhone, tvEmail;
+    private CircleImageView civ_ProfileImg, civ_add_profile_image;
+    private ImageView iv_back, iv_edit_profile;
+    private View active_status;
+    private FloatingActionButton fab_update;
 
-    String uid;
-    DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
-    User user;
-    Uri uri;
+    private String uid;
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private User user;
+    private Uri uri;
+    private Tooltip tooltip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +63,13 @@ public class Profile extends AppCompatActivity {
 
         init();
 
-        if (Objects.equals(getIntent().getStringExtra("editProfile"), "editableProfile")){
-            if (!iv_edit_profile.isShown()){
+        if (Objects.equals(getIntent().getStringExtra("editProfile"), "editableProfile")) {
+            if (!iv_edit_profile.isShown()) {
                 iv_edit_profile.setVisibility(View.VISIBLE);
             } else {
                 iv_edit_profile.setVisibility(View.GONE);
             }
-            if (!civ_add_profile_image.isShown()){
+            if (!civ_add_profile_image.isShown()) {
                 civ_add_profile_image.setVisibility(View.VISIBLE);
             } else {
                 civ_add_profile_image.setVisibility(View.GONE);
@@ -82,6 +83,7 @@ public class Profile extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     user = snapshot.getValue(User.class);
 
+                    assert user != null;
                     if (!(user.getProfileImageUrl() == null || user.getProfileImageUrl().equals("default"))) {
                         Glide.with(Profile.this).load(user.getProfileImageUrl()).into(civ_ProfileImg);
                     }
@@ -134,9 +136,9 @@ public class Profile extends AppCompatActivity {
         fab_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (uri != null){
+                if (uri != null) {
                     uploadProfileImg(uri);
-                    if (fab_update.isShown()){
+                    if (fab_update.isShown()) {
                         fab_update.setVisibility(View.GONE);
                     }
                 }
@@ -144,7 +146,7 @@ public class Profile extends AppCompatActivity {
         });
 
         if (!uid.equals(firebaseUser.getUid())) {
-            if (civ_add_profile_image.isShown()){
+            if (civ_add_profile_image.isShown()) {
                 civ_add_profile_image.setVisibility(View.GONE);
             }
             databaseReference.child("users").child(uid).child("status")
@@ -221,23 +223,22 @@ public class Profile extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == MCU_PROFILE_IMAGE_REQUEST){
+        if (resultCode == RESULT_OK && requestCode == MCU_PROFILE_IMAGE_REQUEST) {
             uri = data.getData();
 
-            if (uri != null){
+            if (uri != null) {
                 Glide.with(Profile.this).load(uri).into(civ_ProfileImg);
 
-                if (!fab_update.isShown()){
+                if (!fab_update.isShown()) {
                     fab_update.setVisibility(View.VISIBLE);
                 }
-                Tooltip.Builder builder = new Tooltip.Builder(fab_update)
+                tooltip = new Tooltip.Builder(fab_update)
                         .setCancelable(true)
                         .setDismissOnClick(true)
                         .setGravity(Gravity.TOP)
                         .setArrowHeight(50f)
                         .setTextColor(Color.WHITE)
-                        .setText("Click here to save changes");
-                builder.show();
+                        .setText("Click here to save changes").show();
             }
         }
     }

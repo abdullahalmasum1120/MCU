@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import retrofit2.Call;
@@ -37,17 +38,18 @@ import retrofit2.Callback;
 
 public class LogIn extends AppCompatActivity {
 
-    EditText et_email, et_password;
-    TextInputLayout emailParent, passwordParent;
-    CircularProgressButton btn_logIn;
-    TextView tv_forgotPassword, tv_register, tv_showMessage;
+    private final String topic = "/topics/chat";
+    private final String TAG = "----LogIn Activity----";
 
-    FirebaseAuth firebaseAuth;
+    private EditText et_email, et_password;
+    private TextInputLayout emailParent, passwordParent;
+    private CircularProgressButton btn_logIn;
+    private TextView tv_forgotPassword, tv_register, tv_showMessage;
 
-    String email, password;
-    final String topic = "/topics/chat";
+    private FirebaseAuth firebaseAuth;
+
+    private String email, password;
     private APIService apiService;
-    private String TAG = "---LogIn---";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +150,7 @@ public class LogIn extends AppCompatActivity {
                                 }
                             });
                     FirebaseDatabase.getInstance().getReference("users")
-                            .child(firebaseAuth.getCurrentUser().getUid())
+                            .child(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
                             .child("username").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -212,11 +214,10 @@ public class LogIn extends AppCompatActivity {
         if (layout.isErrorEnabled()) {
             layout.setErrorEnabled(false);
         }
-//        layout.setEndIconDrawable(R.drawable.ic_ok);
         layout.setEndIconVisible(true);
     }
 
-    public void sendNotification(final String title, final String message) {
+    private void sendNotification(final String title, final String message) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -228,6 +229,7 @@ public class LogIn extends AppCompatActivity {
                             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                                 if (!response.isSuccessful()){
                                     try {
+                                        assert response.errorBody() != null;
                                         Log.d(TAG, "onResponse: " + response.errorBody().string());
                                     } catch (IOException e) {
                                         e.printStackTrace();

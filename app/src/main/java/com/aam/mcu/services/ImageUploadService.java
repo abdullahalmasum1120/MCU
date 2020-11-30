@@ -29,7 +29,7 @@ import com.google.firebase.storage.UploadTask;
 
 public class ImageUploadService extends Service {
 
-    public static final String TAG = "My service class";
+    public static final String TAG = "----upload service----";
     public static final String CHANNEL_ID = "foregroundServiceChannel";
     DatabaseReference databaseReference;
     StorageReference storageReference;
@@ -38,7 +38,6 @@ public class ImageUploadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: called");
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -47,7 +46,6 @@ public class ImageUploadService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind: called");
         return null;
     }
 
@@ -60,7 +58,6 @@ public class ImageUploadService extends Service {
         DatabaseReference mDatabase = databaseReference.child(intent.getStringExtra("databaseRef"));
         StorageReference mStorage = storageReference.child(intent.getStringExtra("storageRef"));
 
-
         createNotificationChannel();
 
         notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -70,44 +67,32 @@ public class ImageUploadService extends Service {
 
         startForeground(1, notification.build());
 
-        ////
-        //do background work
-        if (url != null && mStorage != null && mDatabase != null) {
+        if (url != null) {
+            //upload image
             uploadImage(Uri.parse(url), mStorage, mDatabase);
         }
-        ////
         return START_REDELIVER_INTENT;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: called");
     }
 
     private void uploadImage(final Uri uri, final StorageReference storageReference, final DatabaseReference databaseReference) {
         storageReference.putFile(uri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                Log.d(TAG, "onProgress: called");
+
                 //show or send progress
-
                 final int progress = (int) (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-
-                Log.d(TAG, "onProgress: " + progress);
 
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                Log.d(TAG, "onComplete: called");
                 if (task.isSuccessful()) {
                     Toast.makeText(ImageUploadService.this, "Image upload completed", Toast.LENGTH_LONG).show();
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             if (uri != null) {
-                                Log.d(TAG, "uri: " + uri.toString());
+                                Log.d(TAG, "onSuccess: success");
                                 databaseReference.setValue(uri.toString());
                                 stopSelf();
                             } else {
@@ -138,18 +123,12 @@ public class ImageUploadService extends Service {
         });
     }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        Log.d(TAG, "onLowMemory: called");
-    }
-
     private void createNotificationChannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "foreground Service Channel",
-                    NotificationManager.IMPORTANCE_HIGH
+                    "Uploading Notifications",
+                    NotificationManager.IMPORTANCE_LOW
             );
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);

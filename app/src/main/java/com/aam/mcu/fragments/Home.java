@@ -2,9 +2,7 @@ package com.aam.mcu.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aam.mcu.AddPost;
@@ -30,15 +27,14 @@ import java.util.ArrayList;
 
 public class Home extends Fragment {
 
-    RecyclerView recyclerView;
-    FloatingActionButton fab;
+    private RecyclerView recyclerView;
+    private FloatingActionButton fab;
 
-    ArrayList<Post> posts;
-    ArrayList<String> keys;
-    RecyclerView.Adapter adapter;
-    LinearLayoutManager linearLayoutManager;
+    private ArrayList<Post> posts;
+    private ArrayList<String> keys;
+    private RecyclerView.Adapter adapter;
 
-    DatabaseReference databaseReference;
+    private DatabaseReference databaseReference;
 
     public Home() {
 
@@ -69,7 +65,6 @@ public class Home extends Fragment {
 
                 adapter.notifyItemInserted(0);
                 recyclerView.scrollToPosition(0);
-
             }
 
             @Override
@@ -109,8 +104,6 @@ public class Home extends Fragment {
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.fh_recycler_view);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
 
         fab = view.findViewById(R.id.fh_fab);
 

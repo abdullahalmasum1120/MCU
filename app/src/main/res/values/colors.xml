@@ -16,4 +16,5 @@
     <color name="miniTitle">#2A2E43</color>
     <color name="contentBodyColor">#FCFCFC</color>
     <color name="imageBorderColor">#E01E7A</color>
+    <color name="gray_light">#EEEEEE</color>
 </resources>

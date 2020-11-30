@@ -14,9 +14,6 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.aam.mcu.AddPost"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name="com.aam.mcu.Welcome"
             android:theme="@style/AppTheme.NoActionBar.TransparentStatus">
             <intent-filter>
@@ -26,6 +23,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.aam.mcu.AddPost"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name="com.aam.mcu.Comments"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -33,10 +33,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.aam.mcu.LogIn"
-            android:theme="@style/AppTheme.NoActionBar.TransparentStatus" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.aam.mcu.Register"
-            android:theme="@style/AppTheme.NoActionBar.TransparentStatus" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.aam.mcu.ForgotPassword"
             android:theme="@style/AppTheme.NoActionBar.TransparentStatus" />

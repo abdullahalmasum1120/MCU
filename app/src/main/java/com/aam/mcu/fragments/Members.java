@@ -24,11 +24,11 @@ import java.util.ArrayList;
 
 public class Members extends Fragment {
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
-    ArrayList<User> users;
-    DatabaseReference databaseReference;
-    RecyclerView.Adapter adapter;
+    private ArrayList<User> users;
+    private DatabaseReference databaseReference;
+    private RecyclerView.Adapter adapter;
 
     public Members() {
 

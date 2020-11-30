@@ -27,13 +27,13 @@ import com.google.firebase.database.ValueEventListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Settings extends AppCompatActivity {
-    CircleImageView iv_profileImage;
-    TextView tv_username, tv_userPhone, tv_logout, tv_changePassword, tv_editProfile, tv_language;
-    ImageView iv_back;
-    RelativeLayout iv_goProfile;
+    private CircleImageView iv_profileImage;
+    private TextView tv_username, tv_userPhone, tv_logout, tv_changePassword, tv_editProfile, tv_language;
+    private ImageView iv_back;
+    private RelativeLayout iv_goProfile;
 
-    DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         init();
-
+        //set user info
         databaseReference.child("users/" + firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -80,15 +80,16 @@ public class Settings extends AppCompatActivity {
         tv_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Settings.this);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(Settings.this);
                 alertDialog.setMessage("Do you really want to log out?");
                 alertDialog.setCancelable(false);
                 alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
+                        status("offline");
                         Intent intent = new Intent(Settings.this, LogIn.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     }

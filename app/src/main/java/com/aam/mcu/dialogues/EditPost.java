@@ -34,7 +34,6 @@ public class EditPost extends Dialog {
     private TextInputLayout postBodyParent;
     private ImageView iv_close;
     private CircularProgressButton btn_save;
-    private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
 
     public EditPost(@NonNull final Context context, final Post post) {
@@ -118,7 +117,6 @@ public class EditPost extends Dialog {
         iv_close = findViewById(R.id.dePost_iv_close);
         btn_save = findViewById(R.id.dePost_btn_save);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 }

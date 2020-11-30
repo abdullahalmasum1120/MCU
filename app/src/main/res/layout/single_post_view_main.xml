@@ -9,13 +9,17 @@
     android:elevation="5dp"
     app:cardCornerRadius="10dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/parent"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/spv_header"
             style="@style/parent"
-            android:padding="10dp">
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/spv_civ_profile_image"
@@ -39,8 +43,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:textColor="@color/black"
                     android:text="Username"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -55,13 +59,13 @@
             </LinearLayout>
 
             <ImageView
-                android:visibility="visible"
                 android:id="@+id/spv_iv_more_options"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_more" />
+                android:src="@drawable/ic_more"
+                android:visibility="visible" />
         </RelativeLayout>
 
         <ImageView
@@ -69,22 +73,35 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_image" />
+            android:src="@drawable/ic_image"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spv_header" />
 
         <TextView
             android:id="@+id/spv_tv_post_body"
             style="@style/parent"
             android:padding="10dp"
-            android:text="hi this is a text for testing post body"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spv_iv_post_image" />
 
-        <RelativeLayout style="@style/parent">
+        <RelativeLayout
+            android:id="@+id/spv_footer"
+            style="@style/parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spv_tv_post_body">
 
             <RelativeLayout
                 android:id="@+id/spv_like_parent"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true">
 
                 <ImageView
                     android:id="@+id/spv_iv_like"
@@ -101,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/spv_iv_like"
-                    android:text="123" />
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -125,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/spv_iv_comment"
-                    android:text="22" />
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -149,8 +166,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/spv_iv_seen"
-                    android:text="198" />
+                    android:visibility="gone" />
             </RelativeLayout>
         </RelativeLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

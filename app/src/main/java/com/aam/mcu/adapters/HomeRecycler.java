@@ -1,12 +1,10 @@
 package com.aam.mcu.adapters;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +24,6 @@ import com.aam.mcu.Comments;
 import com.aam.mcu.Profile;
 import com.aam.mcu.R;
 import com.aam.mcu.data.Post;
-import com.aam.mcu.data.User;
 import com.aam.mcu.dialogues.EditPost;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,7 +35,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,12 +44,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> {
 
-    ArrayList<Post> posts;
-    Context context;
-    String username, profileImageUrl;
+    private final int ONLY_IMAGE = 11;
+    private final int ONLY_TEXT = 12;
+    private final int FULL_POST = 13;
+    private ArrayList<Post> posts;
+    private Context context;
 
-    FirebaseUser firebaseUser;
-    DatabaseReference databaseReference;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
 
     public HomeRecycler() {
     }
@@ -63,48 +61,35 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
         this.posts = posts;
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.child("users/" + firebaseUser.getUid()).getValue(User.class);
-
-                username = user.getUsername();
-                profileImageUrl = user.getProfileImageUrl();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     @NonNull
     @Override
     public HomeRecycler.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+        if (viewType == FULL_POST){
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View view = layoutInflater.inflate(R.layout.single_post_view_main, parent, false);
+            return new ViewHolder(view);
+        } else if (viewType == ONLY_IMAGE){
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View view = layoutInflater.inflate(R.layout.single_post_view_image, parent, false);
+            return new ViewHolder(view);
+        } else if (viewType == ONLY_TEXT){
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View view = layoutInflater.inflate(R.layout.single_post_view_text, parent, false);
+            return new ViewHolder(view);
+        }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.single_post_view, parent, false);
-
+        View view = layoutInflater.inflate(R.layout.single_post_view_text, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final HomeRecycler.ViewHolder holder, final int position) {
-
-        if (position == 0){
-            new Tooltip.Builder(holder.iv_post_image)
-                    .setText("Click on image to view full Image")
-                    .setDismissOnClick(true)
-                    .setGravity(Gravity.BOTTOM)
-                    .setTextColor(Color.WHITE)
-                    .setCancelable(true).build().show();
-        }
         //set profile image
         if (posts.get(position).getUid() != null) {
             databaseReference.child("users/" + posts.get(position).getUid() + "/profileImageUrl")
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Glide.with(context).load(snapshot.getValue()).into(holder.iv_profile_image);
@@ -116,40 +101,13 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                         }
                     });
         }
-//        //set post owner name
+        //set post owner name
         if (posts.get(position).getUid() != null) {
-
-            if (posts.get(position).getUid() != null) {
-                databaseReference.child("users/" + posts.get(position).getUid() + "/username")
-                        .addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                holder.tv_name.setText(snapshot.getValue(String.class));
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-            }
-        }
-        //set time of the post has been created
-        if (posts.get(position).getPostTime() != null) {
-            holder.tv_time.setText(posts.get(position).getPostTime());
-        }
-//        //set post body
-        if (posts.get(position).getPostBody() != null) {
-            databaseReference.child("posts/" + posts.get(position).getPostId() + "/postBody")
-                    .addValueEventListener(new ValueEventListener() {
+            databaseReference.child("users/" + posts.get(position).getUid() + "/username")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.getValue() != null){
-                                if (!holder.tv_post_body.isShown()) {
-                                    holder.tv_post_body.setVisibility(View.VISIBLE);
-                                }
-                                holder.tv_post_body.setText(snapshot.getValue().toString());
-                            }
+                            holder.tv_name.setText(snapshot.getValue(String.class));
                         }
 
                         @Override
@@ -158,21 +116,70 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                         }
                     });
         }
-//        //set if post has an image
-        if (posts.get(position).getPostImageUrl() != null) {
+        //set time of the post has been created
+        if (posts.get(position).getPostTime() != null) {
+            holder.tv_time.setText(posts.get(position).getPostTime());
+        }
+        //set if post has an image
+        if (holder.getItemViewType() == ONLY_IMAGE || holder.getItemViewType() == FULL_POST){
+            if (posts.get(position).getPostImageUrl() != null) {
+                if (posts.get(position).getPostImageUrl().equals("default")) {
+                    databaseReference.child("posts/" + posts.get(position).getPostId() + "/postImageUrl")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue() != null) {
+                                        if (!snapshot.getValue().equals("default")) {
+                                            if (!holder.iv_post_image.isShown()) {
+                                                holder.iv_post_image.setVisibility(View.VISIBLE);
+                                            }
+                                            Glide.with(context).load(posts.get(position).getPostImageUrl()).into(holder.iv_post_image);
+                                        } else {
+                                            if (holder.iv_post_image.isShown()) {
+                                                holder.iv_post_image.setVisibility(View.GONE);
+                                            }
+                                        }
+                                    } else {
+                                        if (holder.iv_post_image.isShown()) {
+                                            holder.iv_post_image.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }
 
-            if (posts.get(position).getPostImageUrl().equals("default")) {
-                databaseReference.child("posts/" + posts.get(position).getPostId() + "/postImageUrl")
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                } else {
+                    if (!holder.iv_post_image.isShown()) {
+                        holder.iv_post_image.setVisibility(View.VISIBLE);
+                    }
+                    Glide.with(context).load(posts.get(position).getPostImageUrl()).into(holder.iv_post_image);
+                }
+            } else {
+                if (holder.iv_post_image.isShown()) {
+                    holder.iv_post_image.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        //set post body
+        if (holder.getItemViewType() == ONLY_TEXT || holder.getItemViewType() == FULL_POST){
+            if (posts.get(position).getPostBody() != null) {
+                databaseReference.child("posts/" + posts.get(position).getPostId() + "/postBody")
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.getValue() != null){
-                                    posts.get(position).setPostImageUrl(snapshot.getValue(String.class));
-
-                                    if (!holder.iv_post_image.isShown()) {
-                                        holder.iv_post_image.setVisibility(View.VISIBLE);
+                                if (snapshot.getValue() != null) {
+                                    if (!holder.tv_post_body.isShown()) {
+                                        holder.tv_post_body.setVisibility(View.VISIBLE);
                                     }
-                                    Glide.with(context).load(posts.get(position).getPostImageUrl()).into(holder.iv_post_image);
+                                    holder.tv_post_body.setText(snapshot.getValue(String.class));
+                                } else {
+                                    if (holder.tv_post_body.isShown()) {
+                                        holder.tv_post_body.setVisibility(View.GONE);
+                                    }
                                 }
                             }
 
@@ -181,16 +188,9 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
 
                             }
                         });
-            } else if (!posts.get(position).getPostImageUrl().equals("default")) {
-                if (!holder.iv_post_image.isShown()) {
-                    holder.iv_post_image.setVisibility(View.VISIBLE);
-                }
-                Glide.with(context).load(posts.get(position).getPostImageUrl()).into(holder.iv_post_image);
-            } else if (posts.get(position).getPostImageUrl().equals("empty")){
-
             } else {
-                if (holder.iv_post_image.isShown()) {
-                    holder.iv_post_image.setVisibility(View.GONE);
+                if (holder.tv_post_body.isShown()) {
+                    holder.tv_post_body.setVisibility(View.GONE);
                 }
             }
         }
@@ -200,8 +200,11 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.getValue() != null){
+                        if (snapshot.getValue() != null) {
                             if (snapshot.hasChild("likes")) {
+                                if (!holder.tv_like.isShown()){
+                                    holder.tv_like.setVisibility(View.VISIBLE);
+                                }
                                 holder.tv_like.setText(String.valueOf(snapshot.child("likes").getChildrenCount()));
 
                                 if (snapshot.child("likes").hasChild(firebaseUser.getUid())) {
@@ -210,7 +213,9 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                                     holder.iv_like.setImageTintList(ColorStateList.valueOf(Color.BLACK));
                                 }
                             } else {
-                                holder.tv_like.setText("0");
+                                if (holder.tv_like.isShown()){
+                                    holder.tv_like.setVisibility(View.GONE);
+                                }
                                 holder.iv_like.setImageTintList(ColorStateList.valueOf(Color.BLACK));
                             }
                         }
@@ -221,17 +226,21 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
 
                     }
                 });
-
         //set total comment
         databaseReference.child("posts/" + posts.get(position).getPostId())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.getValue() != null){
+                        if (snapshot.getValue() != null) {
                             if (snapshot.hasChild("comments")) {
+                                if (!holder.tv_comment.isShown()){
+                                    holder.tv_comment.setVisibility(View.VISIBLE);
+                                }
                                 holder.tv_comment.setText(String.valueOf(snapshot.child("comments").getChildrenCount()));
                             } else {
-                                holder.tv_comment.setText("0");
+                                if (holder.tv_comment.isShown()){
+                                    holder.tv_comment.setVisibility(View.GONE);
+                                }
                             }
                         }
                     }
@@ -241,7 +250,6 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
 
                     }
                 });
-
         //set total seen
         databaseReference.child("posts/" + posts.get(position).getPostId())
                 .addValueEventListener(new ValueEventListener() {
@@ -249,9 +257,14 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.getValue() != null) {
                             if (snapshot.hasChild("seen")) {
+                                if (!holder.tv_seen.isShown()){
+                                    holder.tv_seen.setVisibility(View.VISIBLE);
+                                }
                                 holder.tv_seen.setText(String.valueOf(snapshot.child("seen").getChildrenCount()));
                             } else {
-                                holder.tv_seen.setText("0");
+                                if (holder.tv_seen.isShown()){
+                                    holder.tv_seen.setVisibility(View.GONE);
+                                }
                             }
                         }
                     }
@@ -262,9 +275,8 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                     }
                 });
 
-
-
-        //profile onClick event
+        ////////
+        //profile onClick events
         holder.iv_profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,22 +286,25 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
             }
         });
 
-        holder.iv_post_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //animation
-                holder.iv_post_image.startAnimation(AnimationUtils.loadAnimation(context, R.anim.zoom_out));
+        //image onclick event
+        if (holder.getItemViewType() == FULL_POST || holder.getItemViewType() == ONLY_IMAGE){
+            holder.iv_post_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //animation
+                    holder.iv_post_image.startAnimation(AnimationUtils.loadAnimation(context, R.anim.zoom_out));
 
-                showFullImage(Uri.parse(posts.get(position).getPostImageUrl()));
+                    showFullImage(Uri.parse(posts.get(position).getPostImageUrl()));
 
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("uid", firebaseUser.getUid());
-                hashMap.put("time", Calendar.getInstance().getTime().toString());
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put("uid", firebaseUser.getUid());
+                    hashMap.put("time", Calendar.getInstance().getTime().toString());
 
-                databaseReference.child("posts/" + posts.get(position).getPostId() + "/seen")
-                        .child(firebaseUser.getUid()).setValue(hashMap);
-            }
-        });
+                    databaseReference.child("posts/" + posts.get(position).getPostId() + "/seen")
+                            .child(firebaseUser.getUid()).setValue(hashMap);
+                }
+            });
+        }
 
         //like onClick event
         holder.iv_like.setOnClickListener(new View.OnClickListener() {
@@ -340,16 +355,16 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.edit){
-                            if (posts.get(position).getUid().equals(firebaseUser.getUid())){
+                        if (item.getItemId() == R.id.edit) {
+                            if (posts.get(position).getUid().equals(firebaseUser.getUid())) {
                                 EditPost editPost = new EditPost(context, posts.get(position));
                                 editPost.show();
                             } else {
                                 Toast.makeText(context, "You can not edit others post", Toast.LENGTH_SHORT).show();
                             }
                         }
-                        if (item.getItemId() == R.id.delete){
-                            if (posts.get(position).getUid().equals(firebaseUser.getUid())){
+                        if (item.getItemId() == R.id.delete) {
+                            if (posts.get(position).getUid().equals(firebaseUser.getUid())) {
                                 databaseReference.child("posts").child(posts.get(position).getPostId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -413,5 +428,19 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
             iv_like = itemView.findViewById(R.id.spv_iv_like);
             iv_more = itemView.findViewById(R.id.spv_iv_more_options);
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (posts.get(position).getPostBody() != null && posts.get(position).getPostImageUrl() != null) {
+            return FULL_POST;
+        }
+        else if (posts.get(position).getPostImageUrl() != null && posts.get(position).getPostBody() == null) {
+            return ONLY_IMAGE;
+        }
+        else if (posts.get(position).getPostImageUrl() == null && posts.get(position).getPostBody() != null) {
+            return ONLY_TEXT;
+        }
+        return FULL_POST;
     }
 }

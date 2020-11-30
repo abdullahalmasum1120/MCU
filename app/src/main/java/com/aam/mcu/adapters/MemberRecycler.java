@@ -21,17 +21,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MemberRecycler extends RecyclerView.Adapter<MemberRecycler.ViewHolder> {
 
+    private static final String ACTIVE = "active";
+    private static final String OFFLINE = "offline";
+
     private ArrayList<User> users;
     private Context context;
-    DatabaseReference databaseReference;
-
-    public static final String ACTIVE = "active";
-    public static final String OFFLINE = "offline";
+    private DatabaseReference databaseReference;
 
     public MemberRecycler() {
     }
@@ -59,40 +60,40 @@ public class MemberRecycler extends RecyclerView.Adapter<MemberRecycler.ViewHold
             Glide.with(context).load(users.get(position).getProfileImageUrl()).into(holder.ivProfileImg);
 
             //set profile image if changed
-//            databaseReference.child("users").child(chats.get(position).getUid())
-//                    .child("profileImageUrl").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (!snapshot.getValue().equals(chats.get(position).getProfileImageUrl())) {
-//                        Glide.with(context).load(snapshot.getValue()).into(holder.profileImage);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
+            databaseReference.child("users").child(users.get(position).getUserId())
+                    .child("profileImageUrl").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!Objects.equals(snapshot.getValue(), users.get(position).getProfileImageUrl())) {
+                        Glide.with(context).load(snapshot.getValue()).into(holder.ivProfileImg);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
         if (users.get(position).getUsername() != null) {
             holder.tvProfileName.setText(users.get(position).getUsername());
 
             //set username if changed
-//            databaseReference.child("users").child(chats.get(position).getUid())
-//                    .child("username").addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (!snapshot.getValue().equals(chats.get(position).getUsername())) {
-//                        holder.showName.setText(snapshot.getValue().toString());
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
+            databaseReference.child("users").child(users.get(position).getUserId())
+                    .child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!Objects.equals(snapshot.getValue(), users.get(position).getUsername())) {
+                        holder.tvProfileName.setText(snapshot.getValue(String.class));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
 
@@ -106,7 +107,6 @@ public class MemberRecycler extends RecyclerView.Adapter<MemberRecycler.ViewHold
         });
 
         if (users.get(position).getStatus() != null) {
-
             databaseReference.child("users").child(users.get(position).getUserId()).child("status")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
@@ -133,7 +133,6 @@ public class MemberRecycler extends RecyclerView.Adapter<MemberRecycler.ViewHold
 
                         }
                     });
-
         } else {
             holder.active_status.setText(OFFLINE);
         }
