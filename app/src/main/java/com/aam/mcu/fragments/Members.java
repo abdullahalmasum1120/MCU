@@ -70,11 +70,10 @@ public class Members extends Fragment {
     }
 
     private void init(View view) {
-        users = new ArrayList<>();
-
         recyclerView = view.findViewById(R.id.member_recycler_view);
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        users = new ArrayList<>();
         adapter = new MemberRecycler(getContext(), users);
     }
 }

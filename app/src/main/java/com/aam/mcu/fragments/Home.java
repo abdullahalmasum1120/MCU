@@ -16,6 +16,7 @@ import com.aam.mcu.AddPost;
 import com.aam.mcu.R;
 import com.aam.mcu.adapters.HomeRecycler;
 import com.aam.mcu.data.Post;
+import com.aam.mcu.dialogues.ProgressBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,7 @@ public class Home extends Fragment {
     private ArrayList<Post> posts;
     private ArrayList<String> keys;
     private RecyclerView.Adapter adapter;
+    private ProgressBar progressBar;
 
     private DatabaseReference databaseReference;
 
@@ -56,6 +58,8 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         init(view);
+        progressBar.show();
+        progressBar.setProgress("Loading...");
 
         databaseReference.child("posts").addChildEventListener(new ChildEventListener() {
             @Override
@@ -110,10 +114,11 @@ public class Home extends Fragment {
         posts = new ArrayList<>();
         keys = new ArrayList<>();
         posts.clear();
+        progressBar = new ProgressBar(getContext());
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        adapter = new HomeRecycler(getContext(), posts);
+        adapter = new HomeRecycler(getContext(), posts, progressBar);
         recyclerView.setAdapter(adapter);
     }
 }

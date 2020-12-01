@@ -25,6 +25,7 @@ import com.aam.mcu.Profile;
 import com.aam.mcu.R;
 import com.aam.mcu.data.Post;
 import com.aam.mcu.dialogues.EditPost;
+import com.aam.mcu.dialogues.ProgressBar;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,6 +50,7 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
     private final int FULL_POST = 13;
     private ArrayList<Post> posts;
     private Context context;
+    ProgressBar progressBar;
 
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
@@ -56,11 +58,12 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
     public HomeRecycler() {
     }
 
-    public HomeRecycler(Context context, final ArrayList<Post> posts) {
+    public HomeRecycler(Context context, final ArrayList<Post> posts, ProgressBar progressBar) {
         this.context = context;
         this.posts = posts;
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.progressBar = progressBar;
     }
 
     @NonNull
@@ -86,6 +89,9 @@ public class HomeRecycler extends RecyclerView.Adapter<HomeRecycler.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final HomeRecycler.ViewHolder holder, final int position) {
+        //dismiss progressbar
+        progressBar.dismiss();
+
         //set profile image
         if (posts.get(position).getUid() != null) {
             databaseReference.child("users/" + posts.get(position).getUid() + "/profileImageUrl")

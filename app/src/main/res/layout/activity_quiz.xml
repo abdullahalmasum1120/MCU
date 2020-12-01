@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Quiz">
+
+    <WebView
+        android:id="@+id/q_webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_light" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/aq_civ_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_close"
+        app:civ_border_color="@color/whiteTextColor"
+        app:civ_border_width="3dp"
+        app:civ_circle_background_color="@color/whiteTextColor" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/aq_civ_reload"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_toStartOf="@+id/aq_civ_close"
+        android:src="@drawable/ic_refresh"
+        app:civ_border_color="@color/whiteTextColor"
+        app:civ_border_width="3dp"
+        app:civ_circle_background_color="@color/whiteTextColor" />
+
+</RelativeLayout>
