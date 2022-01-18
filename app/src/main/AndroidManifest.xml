@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Welcome"
-            android:theme="@style/AppTheme.NoActionBar.TransparentStatus">
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatus"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,7 +55,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <service
             android:name=".services.FCMService"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

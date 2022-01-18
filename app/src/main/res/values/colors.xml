@@ -17,4 +17,5 @@
     <color name="contentBodyColor">#FCFCFC</color>
     <color name="imageBorderColor">#E01E7A</color>
     <color name="gray_light">#EEEEEE</color>
+    <color name="black">#000000</color>
 </resources>
